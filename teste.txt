@@ -1,0 +1,6 @@
+begin{
+
+    int x = 10;
+    println(x);
+
+}end
