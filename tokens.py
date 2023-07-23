@@ -1,6 +1,6 @@
 class token:
 
-    def _init_(self, nome, lexema, linha):
+    def __init__(self, nome, lexema, linha):
         self.nome = nome
         self.lexema = lexema
         self.linha = linha
