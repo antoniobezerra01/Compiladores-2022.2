@@ -159,7 +159,7 @@ class analisadorLexico:
                     j = i
                     lista_parametros = []
                     qntd_parametros = 0
-                    if(last_token.lexema == "int"):
+                    if(last_token.lexema == "Integer"):
                         while texto[j]!= ")":
                             checkInt = texto[j-2] + texto[j-1] + texto[j]
                             checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
@@ -172,17 +172,17 @@ class analisadorLexico:
                                 lista_parametros.append("Boolean")
                             j += 1
                         self.tabela_simbolos[buffer] = SimboloFuncao("dfunc","Integer",linha,qntd_parametros,lista_parametros)
-                    elif(last_token.lexema == "bool"):
+                    elif(last_token.lexema == "Boolean"):
                         while texto[j]!= ")":
                             checkInt = texto[j-2] + texto[j-1] + texto[j]
                             checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
 
-                            if(checkInt == "int"):
+                            if(checkInt == "Integer"):
                                 qntd_parametros += 1
-                                lista_parametros.append("int")
-                            elif(checkBoolean == "bool"):
+                                lista_parametros.append("Integer")
+                            elif(checkBoolean == "Boolean"):
                                 qntd_parametros += 1
-                                lista_parametros.append("bool")
+                                lista_parametros.append("Boolean")
                             j += 1
                         self.tabela_simbolos[buffer] = SimboloFuncao("dfunc","Boolean",linha,qntd_parametros,lista_parametros)
 
@@ -195,12 +195,12 @@ class analisadorLexico:
                         checkInt = texto[j-2] + texto[j-1] + texto[j]
                         checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
 
-                        if(checkInt == "int"):
+                        if(checkInt == "Integer"):
                             qntd_parametros += 1
-                            lista_parametros.append("int")
-                        elif(checkBoolean == "bool"):
+                            lista_parametros.append("Integer")
+                        elif(checkBoolean == "Boolean"):
                             qntd_parametros += 1
-                            lista_parametros.append("bool")
+                            lista_parametros.append("Boolean")
                         j += 1
 
                     self.tabela_simbolos[buffer] = SimboloCaracteristica("proc",linha,qntd_parametros,lista_parametros)
