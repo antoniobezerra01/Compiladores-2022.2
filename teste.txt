@@ -1,6 +1,44 @@
 begin{
 
-    int x = 10;
-    println(x);
+    dproc soma(Integer a, Integer b){
+        Integer x = a + b;
+        println(x);
+    };
+
+    dfunc maiorOuIgual(Integer c, Integer d){
+        if(c > d){
+            return c;
+        }
+        else{
+            return d;
+        }
+    };
+
+    dfunc media(Integer n1, Integer n2){
+        Integer somatorio = n1 + n2;
+        Integer media = somatorio / 2;
+
+        return media;
+    };
+
+    Integer e = 10;
+    Integer f = 8;
+
+    while(e > f){
+        if(f == 8){
+            continue;
+        }
+        if(f == 9){
+            break;
+        }
+        f = f + 1;
+    }
+
+    Integer i = 10;
+    Integer j = 5;
+
+    cproc soma(i, j);
+    Integer maior = cfunc maiorOuIgual(i, j);
+    println(cfunc media(i, j));
 
 }end

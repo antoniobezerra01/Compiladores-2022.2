@@ -113,7 +113,7 @@ class analisadorLexico:
            self.tokens.append(token("<valor booleana>","false",linha))
            return True
        else:
-           self.identificador(buffer, linha , texto, i)
+           self.variavel(buffer, linha , texto, i)
 
     def verifica_delimitadores(self, p, linha):
        if(p == " "):
@@ -136,9 +136,108 @@ class analisadorLexico:
        else:
            return False
        
-    def identificador(buffer, linha , texto, i):     
-       if(buffer.isalpha()):
-           self.tokens.append(token("<identificador>",buffer,linha))
-           return True
-       else:
-           return False
+    def variavel(self, buffer, linha, texto, i):
+        if(buffer[0].isalpha and not buffer[0].isdigit()):
+            for i in range(len(buffer)):
+                if(buffer[i].isalpha() or buffer[i].isdigit()):
+                    continue
+                else:
+                    print("Erro na linha: ", str(linha))
+                    quit()
+        
+            last_token = self.tokens[len(self.tokens) -1] 
+            pre_last_token = self.tokens[len(self.tokens) -2] 
+            if(buffer not in self.tabela_simbolos):
+                
+                if(last_token.nome == "<tipo>" and pre_last_token.nome != '<declaração de função>'): 
+                        if(last_token.lexema == "Integer"):
+                            self.tabela_simbolos[buffer] = Simbolo("Integer",linha)
+                        
+                        elif(last_token.lexema == "Boolean"):
+                            self.tabela_simbolos[buffer] = Simbolo("Boolean",linha)
+                elif(pre_last_token.lexema == 'dfunc'):
+                    j = i
+                    lista_parametros = []
+                    qntd_parametros = 0
+                    if(last_token.lexema == "int"):
+                        while texto[j]!= ")":
+                            checkInt = texto[j-2] + texto[j-1] + texto[j]
+                            checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
+
+                            if(checkInt == "Integer"):
+                                qntd_parametros += 1
+                                lista_parametros.append("Integer")
+                            elif(checkBoolean == "Boolean"):
+                                qntd_parametros += 1
+                                lista_parametros.append("Boolean")
+                            j += 1
+                        self.tabela_simbolos[buffer] = SimboloFuncao("dfunc","Integer",linha,qntd_parametros,lista_parametros)
+                    elif(last_token.lexema == "bool"):
+                        while texto[j]!= ")":
+                            checkInt = texto[j-2] + texto[j-1] + texto[j]
+                            checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
+
+                            if(checkInt == "int"):
+                                qntd_parametros += 1
+                                lista_parametros.append("int")
+                            elif(checkBoolean == "bool"):
+                                qntd_parametros += 1
+                                lista_parametros.append("bool")
+                            j += 1
+                        self.tabela_simbolos[buffer] = SimboloFuncao("dfunc","Boolean",linha,qntd_parametros,lista_parametros)
+
+                elif(last_token.lexema == "dproc"):
+                    j = i
+                    lista_parametros = []
+                    qntd_parametros = 0
+                    
+                    while texto[j]!= ")":
+                        checkInt = texto[j-2] + texto[j-1] + texto[j]
+                        checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
+
+                        if(checkInt == "int"):
+                            qntd_parametros += 1
+                            lista_parametros.append("int")
+                        elif(checkBoolean == "bool"):
+                            qntd_parametros += 1
+                            lista_parametros.append("bool")
+                        j += 1
+
+                    self.tabela_simbolos[buffer] = SimboloCaracteristica("proc",linha,qntd_parametros,lista_parametros)
+
+                elif(self.tokens[len(self.tokens) -1].nome == "<abre_parenteses>" or self.tokens[len(self.tokens) -1].nome == "<virgula>"):
+                    print('\033[91m' + "Erro variavel {0} não inicializada ".format(buffer) + '\033[0m')
+                    quit()
+
+                self.tokens.append(token("<identificador>",buffer,linha))
+            else:
+                if(self.tokens[len(self.tokens) -1].nome != "<tipo>" and self.tokens[len(self.tokens) -1].nome != "<declaração de procedimento>" and self.tokens[len(self.tokens) -2].nome != "<declaração de função>") :
+                    self.tokens.append(token("<identificador>",buffer,linha))
+                else:
+                    print('\033[91m' + "Erro variavel {0} já existe ".format(buffer) + '\033[0m')
+                    quit()
+        else:
+            for c in buffer:
+                 if(c.isdigit()):
+                     continue
+                 else:
+                    print('\033[91m' + "Erro na linha: " + str(linha) + '\033[0m')
+                    quit()
+                
+            self.tokens.append(token("<número>",buffer,linha))
+
+    def imprimir_lista_tokens(self):
+        for t in self.tokens:
+            print(t.nome + " " + t.lexema + " " + str(t.linha))
+    
+    def imprimir_tabela_simbolos(self):
+        print("SIMBOLOS")
+        for t in self.tabela_simbolos:
+            if type(self.tabela_simbolos[t]) is Simbolo:
+                print(self.tabela_simbolos[t].tipo + " " + t + " " + str(self.tabela_simbolos[t].linha))
+            elif type(self.tabela_simbolos[t]) is SimboloCaracteristica:
+                print(self.tabela_simbolos[t].tipo + " " + t + " " + str(self.tabela_simbolos[t].linha) + " " + str(self.tabela_simbolos[t].qtdParam) + " " + str(self.tabela_simbolos[t].listParam))
+            elif type(self.tabela_simbolos[t]) is SimboloFuncao:
+                print(self.tabela_simbolos[t].tipo + " " +str(self.tabela_simbolos[t].tipoRetorno) + " " + t + " "  + str(self.tabela_simbolos[t].linha) + " " + str(self.tabela_simbolos[t].qtdParam) + " " + str(self.tabela_simbolos[t].listParam))
+                    
+                
