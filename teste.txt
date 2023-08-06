@@ -29,6 +29,10 @@ begin{
         return (aprovacao);
     };
 
+    dfunc Integer retornoFuncao (Integer c1, Integer d1){
+        return (cfunc maiorOuIgual(c1, d1));
+    };
+
     Integer e = 10;
     Integer f = 8;
 
@@ -50,6 +54,7 @@ begin{
 
     cproc soma(i, j);
     Integer maior = cfunc maiorOuIgual(i, j);
+    Integer funcao = cfunc retornoFuncao(i, j);
     println(cfunc media(i, j));
 
 }end
