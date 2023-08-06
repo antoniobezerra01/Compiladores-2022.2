@@ -38,6 +38,7 @@ begin{
 
     while(e > f){
         if(f <= 8){
+            Boolean teste1 = cfunc media(e, f);
             continue;
         }
         if(f == 9){
@@ -46,6 +47,8 @@ begin{
         else{
             Integer dobro = 2  * f;
         }
+        
+        Boolean teste2 = cfunc media(e, f);
         f = f + 1;
     }
 
