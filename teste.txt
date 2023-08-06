@@ -5,31 +5,42 @@ begin{
         println(x);
     };
 
-    dfunc maiorOuIgual(Integer c, Integer d){
+    dfunc Integer maiorOuIgual(Integer c, Integer d){
+        Integer resultado = 0;
         if(c > d){
-            return c;
+            resultado = c;
         }
         else{
-            return d;
+            resultado = d;
         }
+        println(c + d);
+        return (maior);
     };
 
-    dfunc media(Integer n1, Integer n2){
+    dfunc Boolean media(Integer n1, Integer n2){
         Integer somatorio = n1 + n2;
-        Integer media = somatorio / 2;
+        Integer result = somatorio / 2;
+        Boolean aprovacao = False;
 
-        return media;
+        if(result >= 7){
+            aprovacao = True;
+        }
+
+        return (aprovacao);
     };
 
     Integer e = 10;
     Integer f = 8;
 
     while(e > f){
-        if(f == 8){
+        if(f <= 8){
             continue;
         }
         if(f == 9){
             break;
+        }
+        else{
+            Integer dobro = 2  * f;
         }
         f = f + 1;
     }
