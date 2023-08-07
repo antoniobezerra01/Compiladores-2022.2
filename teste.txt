@@ -14,7 +14,7 @@ begin{
             resultado = d;
         }
         println(c + d);
-        return (maior);
+        return maior;
     };
 
     dfunc Boolean media(Integer n1, Integer n2){
@@ -26,11 +26,11 @@ begin{
             aprovacao = True;
         }
 
-        return (aprovacao);
+        return aprovacao;
     };
 
     dfunc Integer retornoFuncao (Integer c1, Integer d1){
-        return (cfunc maiorOuIgual(c1, d1));
+        return cfunc maiorOuIgual(c1, d1);
     };
 
     Integer e = 10;
