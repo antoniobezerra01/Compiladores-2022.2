@@ -155,7 +155,6 @@ class analisadorSintatico:
 
      def chamada_retorno(self):
         self.match("<chamada de retorno>")
-        self.match("<abre parenteses>")
         if self.lista_tokens[self.look_ahead].nome == "<identificador>":
             self.match("<identificador>")
         elif self.lista_tokens[self.look_ahead].nome == "<número>":
@@ -167,7 +166,6 @@ class analisadorSintatico:
         else:
             print("Erro sintático: token esperado: <identificador>" + " ou " + "<numero>" + " ou " + "<valor booleana>" + " ou " + "<chamada de função>" + " encontrado: " + self.lista_tokens[self.look_ahead].nome + " na linha: " + str(self.lista_tokens[self.look_ahead].linha))
             exit()
-        self.match("<fecha parenteses>")
         self.match("<fim comando>")
 
 

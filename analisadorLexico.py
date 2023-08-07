@@ -106,11 +106,11 @@ class analisadorLexico:
        elif (buffer == ","):
            self.tokens.append(token("<virgula>",",",linha))
            return True
-       elif (buffer == "true"):
-           self.tokens.append(token("<valor booleana>","true",linha))
+       elif (buffer == "True"):
+           self.tokens.append(token("<valor booleana>","True",linha))
            return True
-       elif(buffer == "false"):
-           self.tokens.append(token("<valor booleana>","false",linha))
+       elif(buffer == "False"):
+           self.tokens.append(token("<valor booleana>","False",linha))
            return True
        else:
            self.variavel(buffer, linha , texto, i)
