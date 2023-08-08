@@ -46,11 +46,12 @@ class analisadorSintatico:
       elif token_atual.nome == "<chamada do while>":
          self.laço()
          self.bloco()
-      elif token_atual.nome == "<identificador>":
-         self.match("<identificador>")
-         self.match("<atribuição>")
-         self.atribuicao()
-         self.bloco()             
+      elif self.lista_tokens[self.look_ahead].nome == "<identificador>":
+            if(self.lista_tokens[self.look_ahead].lexema in self.tabela_simbolos):
+                self.match("<identificador>")
+                self.match("<atribuição>")
+                self.atribuicao()
+                self.bloco()            
       else:
          return
       
@@ -265,10 +266,11 @@ class analisadorSintatico:
             self.chamada_impressao()
             self.bloco2()
         elif self.lista_tokens[self.look_ahead].nome == "<identificador>":
-            self.match("<identificador>")
-            self.match("<atribuição>")
-            self.atribuicao()
-            self.bloco2()    
+            if(self.lista_tokens[self.look_ahead].lexema in self.tabela_simbolos):
+                self.match("<identificador>")
+                self.match("<atribuição>")
+                self.atribuicao()
+                self.bloco2()
         elif self.lista_tokens[self.look_ahead].nome == "<chamada de procedimento>":
             self.chamada_procedimento()
             self.bloco2()
@@ -301,10 +303,11 @@ class analisadorSintatico:
              self.chamada_procedimento()
              self.bloco3()
          elif self.lista_tokens[self.look_ahead].nome == "<identificador>":
-            self.match("<identificador>")
-            self.match("<atribuição>")
-            self.atribuicao()
-            self.bloco3()    
+            if(self.lista_tokens[self.look_ahead].lexema in self.tabela_simbolos):
+                self.match("<identificador>")
+                self.match("<atribuição>")
+                self.atribuicao()
+                self.bloco3()   
          elif self.lista_tokens[self.look_ahead].nome == "<chamada do if>":
             self.condicao()
             self.bloco3()
@@ -338,10 +341,11 @@ class analisadorSintatico:
       elif token_atual.nome == "<chamada do while>":
          self.laço()
          self.bloco4()
-      elif token_atual.nome == "<identificador>":
-         self.match("<identificador>")
-         self.match("<atribuição>")
-         self.atribuicao()
-         self.bloco4()             
+      elif self.lista_tokens[self.look_ahead].nome == "<identificador>":
+            if(self.lista_tokens[self.look_ahead].lexema in self.tabela_simbolos):
+                self.match("<identificador>")
+                self.match("<atribuição>")
+                self.atribuicao()
+                self.bloco4()        
       else:
          return
