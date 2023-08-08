@@ -161,8 +161,8 @@ class analisadorLexico:
                     qntd_parametros = 0
                     if(last_token.lexema == "Integer"):
                         while texto[j]!= ")":
-                            checkInt = texto[j-2] + texto[j-1] + texto[j]
-                            checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
+                            checkInt = texto[j-6] + texto[j-5] + texto[j-4] + texto[j-3] + texto[j-2] + texto[j-1] + texto[j]
+                            checkBoolean = texto[j-6] + texto[j-5] + texto[j-4] + texto[j-3] + texto[j-2] + texto[j-1] + texto[j]
 
                             if(checkInt == "Integer"):
                                 qntd_parametros += 1
@@ -174,8 +174,8 @@ class analisadorLexico:
                         self.tabela_simbolos[buffer] = SimboloFuncao("dfunc","Integer",linha,qntd_parametros,lista_parametros)
                     elif(last_token.lexema == "Boolean"):
                         while texto[j]!= ")":
-                            checkInt = texto[j-2] + texto[j-1] + texto[j]
-                            checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
+                            checkInt = texto[j-6] + texto[j-5] + texto[j-4] + texto[j-3] + texto[j-2] + texto[j-1] + texto[j]
+                            checkBoolean = texto[j-6] + texto[j-5] + texto[j-4] + texto[j-3] + texto[j-2] + texto[j-1] + texto[j]
 
                             if(checkInt == "Integer"):
                                 qntd_parametros += 1
@@ -192,8 +192,8 @@ class analisadorLexico:
                     qntd_parametros = 0
                     
                     while texto[j]!= ")":
-                        checkInt = texto[j-2] + texto[j-1] + texto[j]
-                        checkBoolean = texto[j-3]+ texto[j-2]+ texto[j-1]+ texto[j]
+                        checkInt = texto[j-6] + texto[j-5] + texto[j-4] + texto[j-3] + texto[j-2] + texto[j-1] + texto[j]
+                        checkBoolean = texto[j-6] + texto[j-5] + texto[j-4] + texto[j-3] + texto[j-2] + texto[j-1] + texto[j]
 
                         if(checkInt == "Integer"):
                             qntd_parametros += 1
