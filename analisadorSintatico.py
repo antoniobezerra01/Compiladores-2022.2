@@ -1,4 +1,5 @@
 from tokens import token
+from analisadorSemantico import *
 
 class analisadorSintatico:
 
@@ -6,6 +7,7 @@ class analisadorSintatico:
         self.tabela_simbolos = tabela_simbolos
         self.lista_tokens = lista_tokens
         self.look_ahead = 0
+        self.instrucoes = []
 
      def match(self, token_esperado):
         if self.lista_tokens[self.look_ahead].nome == token_esperado:
@@ -22,6 +24,7 @@ class analisadorSintatico:
         self.bloco()
         self.match("<fecha chaves>")
         self.match("<fim do programa>")
+        return self.instrucoes
 
      def bloco(self):
       token_atual = self.lista_tokens[self.look_ahead]
@@ -57,12 +60,22 @@ class analisadorSintatico:
       
      def declaracao_variavel(self):
         self.match("<tipo>")
-        self.match("<identificador>")      
+        self.match("<identificador>")
+        if (not verificar_declaracao(self.lista_tokens,self.tabela_simbolos,self.look_ahead)):
+            exit()     
         self.match("<atribuição>")
         self.atribuicao()
         
 
      def declaracao_procedimento(self):
+        look_ahead_aux = self.look_ahead
+        instrucao_aux = []
+
+        while self.lista_tokens[look_ahead_aux].nome != "<abre chaves>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+
+        self.instrucoes.append(instrucao_aux)
         self.match("<declaração de procedimento>")
         self.match("<identificador>")
         self.match("<abre parenteses>")
@@ -72,9 +85,24 @@ class analisadorSintatico:
         self.bloco()
         self.match("<fecha chaves>")
         self.match("<fim comando>")
+        endProc = [token("<end_proc>","<end_proc>",0), token("<end_proc>","endProc",0)]
+        self.instrucoes.append(endProc)
 
      def chamada_procedimento(self):
+        look_ahead_aux = self.look_ahead
+        instrucao_aux = []
+
+        while self.lista_tokens[look_ahead_aux].nome != "<fim comando>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+
+        self.instrucoes.append(instrucao_aux)
         self.match("<chamada de procedimento>")
+        
+        if(not verificar_parametros_proc(self.lista_tokens,self.tabela_simbolos,self.look_ahead)):
+            print("Erro semântico: procedimento ")
+            exit()
+
         self.match("<identificador>")
         self.match("<abre parenteses>")
         self.chamada_parametros()
@@ -85,6 +113,8 @@ class analisadorSintatico:
         if self.lista_tokens[self.look_ahead].nome == "<valor booleana>":
             self.match("<valor booleana>")
         else:
+            if (not verificar_expressao(self.lista_tokens,self.tabela_simbolos,self.look_ahead)):
+                exit()
             if self.lista_tokens[self.look_ahead].nome == "<identificador>":
                 self.match("<identificador>")
                 self.match("<operador booleano>")
@@ -108,6 +138,13 @@ class analisadorSintatico:
         
         
      def atribuicao(self):
+        look_ahead_aux = self.look_ahead - 2  
+        instrucao_aux = []
+        while self.lista_tokens[look_ahead_aux].nome != "<fim comando>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+        self.instrucoes.append(instrucao_aux)
+
         if self.lista_tokens[self.look_ahead+1].nome == "<operador aritmético>":
             self.chamada_operador()
             self.match("<fim comando>")
@@ -129,6 +166,8 @@ class analisadorSintatico:
 
 
      def chamada_operador(self):
+        if (not verificar_atribuicao(self.lista_tokens,self.tabela_simbolos,self.look_ahead)):
+            exit()
         while True:
             if self.lista_tokens[self.look_ahead].nome == "<identificador>":
                 self.match("<identificador>")
@@ -155,6 +194,13 @@ class analisadorSintatico:
 
 
      def chamada_retorno(self):
+        instrucao_aux = []
+
+        instrucao_aux.append(self.lista_tokens[self.look_ahead])
+        instrucao_aux.append(self.lista_tokens[self.look_ahead + 2])
+
+        self.instrucoes.append(instrucao_aux)
+
         self.match("<chamada de retorno>")
         if self.lista_tokens[self.look_ahead].nome == "<identificador>":
             self.match("<identificador>")
@@ -165,32 +211,49 @@ class analisadorSintatico:
         elif self.lista_tokens[self.look_ahead].nome == "<chamada de função>":
             self.chamada_funcao()
         else:
-            print("Erro sintático: token esperado: <identificador>" + " ou " + "<numero>" + " ou " + "<valor booleana>" + " ou " + "<chamada de função>" + " encontrado: " + self.lista_tokens[self.look_ahead].nome + " na linha: " + str(self.lista_tokens[self.look_ahead].linha))
+            print("Erro sintático: token esperado: <identificador>" + " ou " + "<número>" + " ou " + "<valor booleana>" + " ou " + "<chamada de função>" + " encontrado: " + self.lista_tokens[self.look_ahead].nome + " na linha: " + str(self.lista_tokens[self.look_ahead].linha))
             exit()
         self.match("<fim comando>")
+        end = [token("<end_func>","<end_func>",0), token("<end_func>","end_func",0)]
+        self.instrucoes.append(end)
 
 
      def chamada_impressao(self):
+        instrucao_aux = []
+        look_ahead_aux = self.look_ahead
+
+        while self.lista_tokens[look_ahead_aux].nome != "<fim comando>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+
+        self.instrucoes.append(instrucao_aux)
         self.match("<chamada de impressão>")
         self.match("<abre parenteses>")
         if (self.lista_tokens[self.look_ahead+1].nome == "<operador aritmético>"):
             self.chamada_operador()
         elif(self.lista_tokens[self.look_ahead].nome == "<identificador>"):
             self.match("<identificador>")
-        elif(self.lista_tokens[self.look_ahead].nome == "<numero>"):
-            self.match("<numero>")
+        elif(self.lista_tokens[self.look_ahead].nome == "<número>"):
+            self.match("<número>")
         elif(self.lista_tokens[self.look_ahead].nome == "<chamada de função>"):
             self.chamada_funcao()
         elif(self.lista_tokens[self.look_ahead].nome == "<valor booleana>"):
             self.match("<valor booleana>")
         else:
-            print("Erro sintático: token esperado: <identificador>" + " ou " + "<numero>" + " ou " + "<chamada de função>" + " ou " + "<valor booleana>" + " encontrado: " + self.lista_tokens[self.look_ahead].nome + " na linha: " + str(self.lista_tokens[self.look_ahead].linha))
+            print("Erro sintático: token esperado: <identificador>" + " ou " + "<número>" + " ou " + "<chamada de função>" + " ou " + "<valor booleana>" + " encontrado: " + self.lista_tokens[self.look_ahead].nome + " na linha: " + str(self.lista_tokens[self.look_ahead].linha))
             exit()
         self.match("<fecha parenteses>")
         self.match("<fim comando>")
             
 
      def laço(self):
+        look_ahead_aux = self.look_ahead
+        instrucao_aux = []
+        while self.lista_tokens[look_ahead_aux].nome != "<abre chaves>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+        self.instrucoes.append(instrucao_aux)
+
         self.match("<chamada do while>")
         self.match("<abre parenteses>")
         self.expressao()
@@ -200,23 +263,39 @@ class analisadorSintatico:
         if self.lista_tokens[self.look_ahead].nome == "<incondicional>":
             self.match("<incondicional>") 
             self.match("<fim comando>")
-        self.match("<fecha chaves>")  
+        self.match("<fecha chaves>")
+        self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead -1] ])
+        
      
      def declaracao_funcao(self):
+        look_ahead_aux = self.look_ahead 
+        instrucao_aux = []
+        while self.lista_tokens[look_ahead_aux].nome != "<abre chaves>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+
+        self.instrucoes.append(instrucao_aux)
         self.match("<declaração de função>")
         self.match("<tipo>")
+        aux = self.look_ahead
         self.match("<identificador>")
         self.match("<abre parenteses>")
         self.parametros()
         self.match("<fecha parenteses>")
         self.match("<abre chaves>")
         self.bloco4()
+        if (not verificar_retorno(self.lista_tokens,self.tabela_simbolos,self.look_ahead,aux)):
+            print("Erro semântico: função sem retorno na linha: " + str(self.lista_tokens[self.look_ahead].linha))
+            exit()
         self.chamada_retorno()
         self.match("<fecha chaves>")
         self.match("<fim comando>")
 
      def chamada_funcao(self):
         self.match("<chamada de função>")
+        if(not verificar_parametros_funcao(self.lista_tokens,self.tabela_simbolos,self.look_ahead)):
+            print("Erro semântico: número de parâmetros inválido na linha: " + str(self.lista_tokens[self.look_ahead].linha))
+            exit()
         self.match("<identificador>")
         self.match("<abre parenteses>")
         self.chamada_parametros()
@@ -237,6 +316,13 @@ class analisadorSintatico:
             self.chamada_parametros()
 
      def condicao(self):
+        look_ahead_aux = self.look_ahead
+        instrucao_aux = []
+        while self.lista_tokens[look_ahead_aux].nome != "<abre chaves>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+
+        self.instrucoes.append(instrucao_aux)
         self.match("<chamada do if>")
         self.match("<abre parenteses>")
         self.expressao()
@@ -244,7 +330,9 @@ class analisadorSintatico:
         self.match("<abre chaves>")
         self.bloco3()
         self.match("<fecha chaves>")
+        self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead]])
         if self.lista_tokens[self.look_ahead].nome == "<chamada do else>":
+            self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead]])
             self.match("<chamada do else>")
             self.match("<abre chaves>")
             self.bloco3()
@@ -275,12 +363,20 @@ class analisadorSintatico:
             self.chamada_procedimento()
             self.bloco2()
         elif self.lista_tokens[self.look_ahead].nome == "<incondicional>":
+            self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead]])
             self.match("<incondicional>")
             self.match("<fim comando>")
             self.bloco2()
                 
   
      def condicao2(self):
+        look_ahead_aux = self.look_ahead
+        instrucao_aux = []
+        while self.lista_tokens[look_ahead_aux].nome != "<abre chaves>":
+            instrucao_aux.append(self.lista_tokens[look_ahead_aux])
+            look_ahead_aux += 1
+
+        self.instrucoes.append(instrucao_aux)
         self.match("<chamada do if>")
         self.match("<abre parenteses>")
         self.expressao()
@@ -288,12 +384,16 @@ class analisadorSintatico:
         self.match("<abre chaves>")
         self.bloco2()
         self.match("<fecha chaves>")
+        if not self.lista_tokens[self.look_ahead+1].nome == "<else_part>":
+            self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead]])
         
         if self.lista_tokens[self.look_ahead].nome == "<chamada do else>":
+            self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead]])
             self.match("<chamada do else>")
             self.match("<abre chaves>")
             self.bloco2()
             self.match("<fecha chaves>")
+            self.instrucoes.append([self.lista_tokens[self.look_ahead],self.lista_tokens[self.look_ahead]])
         
      def bloco3(self):
          if self.lista_tokens[self.look_ahead].nome == "<tipo>":  

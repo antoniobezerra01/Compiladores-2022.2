@@ -1,0 +1,118 @@
+
+proc soma:
+begin_proc:
+
+_t0 = a + b
+x = _t0
+
+print(x)
+
+end_proc
+
+func maiorOuIgual:
+begin_func:
+
+resultado = 0 
+
+ifFalse c>d goto: L1
+
+resultado = c 
+
+goto: L2
+L1:
+
+goto: L2
+L2:
+
+resultado = d 
+
+print(c)
+
+return ;
+
+end_func
+
+func media:
+begin_func:
+
+_t0 = n1 + n2
+somatorio = _t0
+
+_t0 = somatorio / 2
+result = _t0
+
+aprovacao = False 
+
+ifFalse result>=7 goto: L2
+
+aprovacao = True 
+
+return return
+
+return ;
+
+end_func
+
+func retornoFuncao:
+begin_func:
+
+return ;
+
+end_func
+
+e = 10 
+
+f = 8 
+
+_param = f 
+_param = e 
+teste1 = call media,2
+
+L3:
+ifW e>f goto: L4
+
+ifFalse f<=8 goto: L5
+
+_param = f 
+_param = e 
+teste10 = call media,2
+
+goto: L3
+
+goto: L6
+L5:
+
+goto: L6
+L6:
+
+_t0 = 2 * f
+dobro = _t0
+
+
+_param = f 
+_param = e 
+teste2 = call media,2
+
+_t0 = f + 1
+f = _t0
+
+goto: L3
+L4:
+
+i = 10 
+
+j = 5 
+
+_param = j 
+_param = i 
+call soma,2
+
+_param = j 
+_param = i 
+maior = call maiorOuIgual,2
+
+_param = j 
+_param = i 
+funcao = call retornoFuncao,2
+
+print(cfunc)
